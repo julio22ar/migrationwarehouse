@@ -1,5 +1,5 @@
 // scripts/utils/constants.js
-export const API_URL = 'http://localhost:3000';
+export const API_URL = 'http://192.168.0.16:3000';
 
 export const ROLES = {
     SUPER_ADMIN: 'super_admin',

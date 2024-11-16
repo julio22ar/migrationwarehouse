@@ -147,7 +147,7 @@ class LoginPage {
             };
 
             // Realizar la petición al servidor
-            const response = await fetch('http://localhost:3000/auth/login', {
+            const response = await fetch('http://192.168.0.16:3000/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

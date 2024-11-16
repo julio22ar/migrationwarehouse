@@ -52,7 +52,7 @@ class DashboardPage {
 
     async loadStats() {
         try {
-            const response = await fetch('http://localhost:3000/api/inventory/stats');
+            const response = await fetch('http://192.168.0.16:3000/api/inventory/stats');
             const data = await response.json();
             
             if (data.success) {
@@ -68,7 +68,7 @@ class DashboardPage {
 
     async loadProducts() {
         try {
-            const response = await fetch('http://localhost:3000/api/products');
+            const response = await fetch('http://192.168.0.16:3000/api/products');
             const data = await response.json();
             
             if (data.success) {
@@ -85,7 +85,7 @@ class DashboardPage {
 
     async loadCategories() {
         try {
-            const response = await fetch('http://localhost:3000/api/categories');
+            const response = await fetch('http://192.168.0.16:3000/api/categories');
             const data = await response.json();
             
             if (data.success) {
@@ -134,8 +134,8 @@ class DashboardPage {
 
         try {
             const url = this.currentProductId 
-                ? `http://localhost:3000/api/products/${this.currentProductId}`
-                : 'http://localhost:3000/api/products';
+                ? `http://192.168.0.16:3000/api/products/${this.currentProductId}`
+                : 'http://192.168.0.16:3000/api/products';
             
             const method = this.currentProductId ? 'PUT' : 'POST';
             
@@ -166,7 +166,7 @@ class DashboardPage {
     async deleteProduct(id) {
         if (confirm('¿Está seguro de eliminar este producto?')) {
             try {
-                const response = await fetch(`http://localhost:3000/api/products/${id}`, {
+                const response = await fetch(`http://192.168.0.16:3000/api/products/${id}`, {
                     method: 'DELETE'
                 });
 
@@ -272,7 +272,7 @@ class DashboardPage {
 
     async editProduct(id) {
         try {
-            const response = await fetch(`http://localhost:3000/api/products/${id}`);
+            const response = await fetch(`http://192.168.0.16:3000/api/products/${id}`);
             const data = await response.json();
 
             if (data.success) {

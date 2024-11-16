@@ -109,7 +109,7 @@ const Auth = {
             const token = sessionStorage.getItem('token');
             if (!token) return false;
 
-            const response = await fetch('http://localhost:3000/auth/verify', {
+            const response = await fetch('http://192.168.0.16:3000/auth/verify', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -130,7 +130,7 @@ const Auth = {
             const token = sessionStorage.getItem('token');
             if (!token) return false;
 
-            const response = await fetch('http://localhost:3000/auth/me', {
+            const response = await fetch('http://192.168.0.16:3000/auth/me', {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

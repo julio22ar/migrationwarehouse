@@ -1,6 +1,6 @@
 // scripts/utils/api.js
 const API = {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://192.168.0.16:3000',
     
     async fetchAPI(endpoint, options = {}) {
         try {
