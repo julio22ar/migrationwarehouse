@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario - Sistema de Inventario</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/components/navbar.css">
+    <link rel="stylesheet" href="../styles/components/sidebar.css">
+    <link rel="stylesheet" href="../styles/components/tables.css">
+    <link rel="stylesheet" href="../styles/components/forms.css">
+    <link rel="stylesheet" href="../styles/components/modal.css">
+    <link rel="stylesheet" href="../styles/components/buttons.css">
+    <link rel="stylesheet" href="../styles/pages/inventory.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <h1>Sistema de Inventario</h1>
+            <div class="user-info">
+                <span id="userName">Administrador</span>
+                <button id="logoutBtn" class="btn btn-danger">Cerrar Sesión</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="menu">
+            <h3>Menú Principal</h3>
+            <ul>
+                <li><a href="inventory.html" class="active">Inventario</a></li>
+                <li><a href="reports.html" data-permission="VIEW_REPORTS">Reportes</a></li>
+                <li><a href="users.html" data-permission="MANAGE_USERS">Usuarios</a></li>
+            </ul>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h2>Gestión de Inventario</h2>
+            <button id="addProductBtn" class="btn btn-primary">
+                <span class="btn-icon">➕</span> Agregar Producto
+            </button>
+        </div>
+
+        <div class="inventory-stats">
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-info">
+                    <span id="totalProducts" class="stat-value">0</span>
+                    <span class="stat-label">Total Productos</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">⚠️</div>
+                <div class="stat-info">
+                    <span id="lowStock" class="stat-value">0</span>
+                    <span class="stat-label">Stock Bajo</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-info">
+                    <span id="categories" class="stat-value">0</span>
+                    <span class="stat-label">Categorías</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="filters-bar">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="form-control" placeholder="Buscar productos...">
+            </div>
+            <div class="filters">
+                <select id="categoryFilter" class="form-control">
+                    <option value="">Todas las categorías</option>
+                </select>
+                <select id="statusFilter" class="form-control">
+                    <option value="">Todos los estados</option>
+                    <option value="in_stock">En Stock</option>
+                    <option value="low_stock">Stock Bajo</option>
+                    <option value="out_stock">Sin Stock</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Stock</th>
+                        <th>Estado</th>
+                        <th>Ubicación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTableBody">
+                    <!-- Se llenará dinámicamente -->
+                </tbody>
+            </table>
+            <div id="pagination" class="pagination">
+                <!-- Se llenará dinámicamente -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal de Producto -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Agregar Producto</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="productForm">
+                    <div class="form-group">
+                        <label class="form-label">Nombre del Producto</label>
+                        <input type="text" name="name" id="name" class="form-control" required>
+                    </div>
+    
+                    <div class="form-group">
+                        <label class="form-label">Categoría</label>
+                        <select name="category_id" id="category_id" class="form-control" required>
+                            <option value="">Seleccione una categoría</option>
+                        </select>
+                    </div>
+    
+                    <div class="form-group">
+                        <label class="form-label">Cantidad</label>
+                        <input type="number" name="quantity" id="quantity" class="form-control" required>
+                    </div>
+    
+                    <div class="form-group">
+                        <label class="form-label">Stock Mínimo</label>
+                        <input type="number" name="minimum_stock" id="minimum_stock" class="form-control" required>
+                    </div>
+    
+                    <div class="form-group">
+                        <label class="form-label">Ubicación</label>
+                        <input type="text" name="location" id="location" class="form-control">
+                    </div>
+    
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <textarea name="description" id="description" class="form-control"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancelProductBtn" class="btn btn-secondary">Cancelar</button>
+                <button type="button" id="saveProductBtn" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Eliminar -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmar Eliminación</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>¿Está seguro que desea eliminar este producto?</p>
+                <p>Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="window.inventoryPage.closeModal()">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Ver Detalles -->
+    <div id="viewProductModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detalles del Producto</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="productDetails">
+                <!-- Se llenará dinámicamente -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="document.getElementById('viewProductModal').style.display='none'">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../script/pages/inventory.js"></script>
+</body>
+</html>
