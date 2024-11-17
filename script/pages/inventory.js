@@ -163,25 +163,32 @@ class InventoryPage {
 
     async loadCategories() {
         try {
+            console.log('Iniciando carga de categorías...');
             const response = await fetch(`${API_URL}/api/categories`, {
                 headers: {
                     'Authorization': `Bearer ${sessionStorage.getItem('token')}`
                 }
             });
             const data = await response.json();
+            console.log('Datos de categorías recibidos:', data);
             
             if (data.success) {
                 // Actualizar select de filtro de categorías
                 const categoryFilter = document.getElementById('categoryFilter');
-                categoryFilter.innerHTML = `
-                    <option value="">Todas las categorías</option>
-                    ${data.data.map(category => `
-                        <option value="${category.id}">${this.escapeHtml(category.name)}</option>
-                    `).join('')}
-                `;
-
+                if (categoryFilter) {
+                    categoryFilter.innerHTML = `
+                        <option value="">Todas las categorías</option>
+                        ${data.data.map(category => `
+                            <option value="${category.id}">${this.escapeHtml(category.name)}</option>
+                        `).join('')}
+                    `;
+                    console.log('Filtro de categorías actualizado');
+                } else {
+                    console.log('No se encontró el elemento categoryFilter');
+                }
+    
                 // Actualizar select del modal de producto
-                const productCategory = document.getElementById('productCategory');
+                const productCategory = document.getElementById('category_id');
                 if (productCategory) {
                     productCategory.innerHTML = `
                         <option value="">Seleccione una categoría</option>
@@ -189,7 +196,12 @@ class InventoryPage {
                             <option value="${category.id}">${this.escapeHtml(category.name)}</option>
                         `).join('')}
                     `;
+                    console.log('Select de categorías del modal actualizado');
+                } else {
+                    console.log('No se encontró el elemento category_id');
                 }
+            } else {
+                console.error('Error en la respuesta de categorías:', data.error);
             }
         } catch (error) {
             console.error('Error loading categories:', error);
@@ -225,19 +237,26 @@ class InventoryPage {
         }
     
         this.currentProductId = null;
-        const modalTitle = document.getElementById('modalTitle');
-        if (modalTitle) modalTitle.textContent = 'Agregar Producto';
-    
-        const form = document.getElementById('productForm');
-        if (form) form.reset();
-    
-        const modal = document.getElementById('productModal');
-        if (modal) {
-            modal.style.display = 'block'; // Cambiado de classList.add('show')
-            console.log('Modal displayed');
-        } else {
-            console.log('Modal element not found');
-        }
+        
+        // Primero cargar las categorías
+        this.loadCategories().then(() => {
+            const modalTitle = document.getElementById('modalTitle');
+            if (modalTitle) modalTitle.textContent = 'Agregar Producto';
+        
+            const form = document.getElementById('productForm');
+            if (form) form.reset();
+        
+            const modal = document.getElementById('productModal');
+            if (modal) {
+                modal.style.display = 'block';
+                console.log('Modal displayed');
+            } else {
+                console.log('Modal element not found');
+            }
+        }).catch(error => {
+            console.error('Error loading categories:', error);
+            this.showError('Error al cargar las categorías');
+        });
     }
 
     async openEditModal(productId) {
