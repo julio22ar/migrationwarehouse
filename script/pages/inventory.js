@@ -225,6 +225,7 @@ class InventoryPage {
         }
     
         this.currentProductId = null;
+	this.loadCategories().then(()=>{
         const modalTitle = document.getElementById('modalTitle');
         if (modalTitle) modalTitle.textContent = 'Agregar Producto';
     
@@ -238,7 +239,59 @@ class InventoryPage {
         } else {
             console.log('Modal element not found');
         }
-    }
+    }).cath(error => {
+	console.error('error cargando categorias',error);
+	this.showError('error cargando categorias');
+	});
+	}
+
+async loadCategories() {
+        try {
+            console.log('Iniciando carga de categorías...');
+            const response = await fetch(`${API_URL}/api/categories`, {
+                headers: {
+                    'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+                }
+            });
+            const data = await response.json();
+            console.log('Datos de categorías recibidos:', data);
+            
+            if (data.success) {
+                // Actualizar select de filtro de categorías
+                const categoryFilter = document.getElementById('categoryFilter');
+                if (categoryFilter) {
+                    categoryFilter.innerHTML = `
+                        <option value="">Todas las categorías</option>
+                        ${data.data.map(category => `
+                            <option value="${category.id}">${this.escapeHtml(category.name)}</option>
+                        `).join('')}
+                    `;
+                    console.log('Filtro de categorías actualizado');
+                } else {
+                    console.log('No se encontró el elemento categoryFilter');
+                }
+    
+                // Actualizar select del modal de producto
+                const productCategory = document.getElementById('category_id');
+                if (productCategory) {
+                    productCategory.innerHTML = `
+                        <option value="">Seleccione una categoría</option>
+                        ${data.data.map(category => `
+                            <option value="${category.id}">${this.escapeHtml(category.name)}</option>
+                        `).join('')}
+                    `;
+                    console.log('Select de categorías del modal actualizado');
+                } else {
+                    console.log('No se encontró el elemento category_id');
+                }
+            } else {
+                console.error('Error en la respuesta de categorías:', data.error);
+            }
+        } catch (error) {
+            console.error('Error loading categories:', error);
+            this.showError('Error al cargar categorías');
+        }
+    }	
 
     async openEditModal(productId) {
         if (!Auth.hasPermission('EDIT_PRODUCT')) {

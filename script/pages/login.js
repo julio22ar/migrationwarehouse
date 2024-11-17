@@ -147,7 +147,7 @@ class LoginPage {
             };
 
             // Realizar la petición al servidor
-            const response = await fetch('http://192.168.0.16:3000/auth/login', {
+            const response = await fetch('http://192.168.0.16:3000/auth/login',{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -163,9 +163,9 @@ class LoginPage {
                 
                 // Redirigir según el rol
                 if (data.data.user.role === 'super_admin') {
-                    window.location.href = '../pages/inventory.html';
+                    window.location.href = '/pages/inventory.html';
                 } else {
-                    window.location.href = '../pages/inventory.html';
+                    window.location.href = '/pages/inventory.html';
                 }
             } else {
                 // Mostrar error de autenticación

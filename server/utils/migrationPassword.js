@@ -1,6 +1,24 @@
+
 // server/utils/migratePasswords.js
-const pool = require('../config/database');
-const hashHelper = require('./hashHelper');
+const mysql = require('mysql2/promise');
+const bcrypt = require('bcrypt');
+
+// Definimos las variables de la base de datos directamente en el script
+const DB_HOST = 'localhost';
+const DB_USER = 'b0dega_user';
+const DB_PASSWORD = 'Crazyjuan2114.';
+const DB_DATABASE = 'inventory_system';
+
+// Configuración de la conexión a la base de datos
+const pool = mysql.createPool({
+    host: DB_HOST,
+    user: DB_USER,
+    password: DB_PASSWORD,
+    database: DB_DATABASE,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
 
 async function migratePasswords() {
     let connection;
@@ -19,7 +37,7 @@ async function migratePasswords() {
 
         // Hashear cada contraseña
         for (const user of users) {
-            const hashedPassword = await hashHelper.hashPassword(user.password);
+            const hashedPassword = await bcrypt.hash(user.password, 10);
             await connection.execute(
                 'UPDATE users SET password = ? WHERE id = ?',
                 [hashedPassword, user.id]
@@ -45,3 +63,4 @@ async function migratePasswords() {
 }
 
 migratePasswords();
+
